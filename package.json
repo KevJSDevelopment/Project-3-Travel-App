@@ -1,0 +1,24 @@
+{
+  "name": "project-3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bootstrap": "^3.4.1",
+    "fomantic-ui": "^2.8.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevJSDevelopment/Project-3-Travel-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevJSDevelopment/Project-3-Travel-App/issues"
+  },
+  "homepage": "https://github.com/KevJSDevelopment/Project-3-Travel-App#readme"
+}
