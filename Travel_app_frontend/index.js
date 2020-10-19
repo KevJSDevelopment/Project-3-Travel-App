@@ -1,27 +1,33 @@
 const URL = "http://localhost:3000";
 const nav = () => document.querySelector("nav");
 const body = () => document.querySelector("body");
+// const bookingsList = () => document.querySelector("#bookings")
 let account =  null;
 document.addEventListener("DOMContentLoaded", () => {
   seeProfile();
   getLocations();
+  // bookingsList().remove();
 });
 
 function getLocations() {
     let locationFrom = document.querySelector("#location-from")
     let locationTo = document.querySelector("#location-to")
+    let locForm = document.querySelector("#location-form")
+    
     fetch(URL + "/locations")
     .then(resp => resp.json())
     .then(locations => {
-        locations.forEach(location => {
-            let fromOption = document.createElement("option")
-            fromOption.innerText = location.name
-            let toOption = document.createElement("option")
-            toOption.innerText = location.name
-            locationFrom.append(fromOption)
-            locationTo.append(toOption)
-        });
+      locations.forEach(location => {
+        let fromOption = document.createElement("option")
+        fromOption.innerText = location.name
+        let toOption = document.createElement("option")
+        toOption.innerText = location.name
+        locationFrom.append(fromOption)
+        locationTo.append(toOption)
+      });
     })
+
+    locForm.addEventListener("submit", seeBookings)
 }
 function seeProfile() {
 
@@ -93,4 +99,66 @@ function showProfile(profileAccount) {
     profileName.classList = "card-title"
     profileDiv.append(profileName)
     body().append(profileDiv)
+}
+
+function seeBookings(event) {
+  event.preventDefault();
+  //  event.target[3].value
+  // event.target[2].value
+  let destination = event.target[1].value
+  let bookingList = document.querySelector("#bookings-list")
+  console.log(bookingList)
+  
+  fetch(URL + "/bookings", {
+    method: "POST",
+    headers: {"Content-Type" : "application/json"},
+    body: JSON.stringify({destination: destination})
+  })
+  .then(res => res.json())
+  .then(rooms => rooms.forEach(room => {   
+    // nested fetch request
+    fetch(URL + "/hotels", {
+      method: "POST", 
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify({hotel_id: room.hotel_id})
+    })
+    .then(resp => resp.json())
+    .then(hotel => {
+
+      let roomDiv = document.createElement("div")
+      roomDiv.classList = "col-5"
+
+      let cardDiv = document.createElement("div")
+      cardDiv.classList = "card card-block"
+
+      let hotelName = document.createElement("h2")
+      hotelName.innerText = hotel.name
+
+      let roomNum = document.createElement("p") 
+      roomNum.classList = "subtitle"
+      roomNum.innerText= "Room number: " + room.id
+
+      let roomPrice = document.createElement("p") 
+      roomPrice.classList = "subtitle"
+      roomPrice.innerText= "Price: $" + room.price
+
+      let bookingBtn = document.createElement("button")
+      bookingBtn.classList = "btn btn-success btn-sm booking-btn"
+      bookingBtn.innerText = "Book Room"
+
+      cardDiv.append(hotelName)
+      cardDiv.append(roomNum)
+      cardDiv.append(roomPrice)
+      cardDiv.append(bookingBtn)
+      roomDiv.append(cardDiv)
+      bookingList.append(roomDiv)
+    })
+
+
+
+      // <div class="col-5">
+			// 	<div class="card card-block card-1"></div>
+			// </div>
+    })
+  )
 }

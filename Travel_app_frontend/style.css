@@ -3,18 +3,66 @@ h2 {
 }
 
 .location-form {
-    text-align: left;
+    display: inline-flex;
 }
 
 #location-from {
     width: 25%;
-    display: inline-block;
+    display: inline;
 }
 
 #location-to {
     width: 25%;
-    display: inline-block;
+    display: inline;
 }
 #date-form {
     display: inline-flex;
+}
+div.row {
+    width: 60%;
+}
+
+/* css for bookings */
+
+.booking-btn {
+    float: right;
+}
+
+#bookings {
+    border: 2px solid grey;
+    float: right;
+    width: 75%;
+}
+
+.scrolling-wrapper{
+	overflow-x: auto;
+}
+
+body{
+	background-color: black;
+	color: #fff;
+	font-family: 'system-ui';
+}
+
+h1{
+	font-weight: 800;
+	font-size: 3em;
+}
+
+.subtitle{
+	font-size: 1.25em;
+	opacity: 0.65;
+}
+
+.card-block{
+	height: 250px;
+	background-color: #fff;
+	border: none;
+	background-position: center;
+	background-size: cover;
+    transition: all 0.2s ease-in-out 
+    !important;
+	border-radius: 24px;
+    transform: translateY(-5px);
+	box-shadow: none;
 }
