@@ -6,6 +6,7 @@ let account =  null;
 document.addEventListener("DOMContentLoaded", () => {
   seeProfile();
   getLocations();
+  showCarousal()
   // bookingsList().remove();
 });
 
@@ -161,4 +162,57 @@ function seeBookings(event) {
 			// </div>
     })
   )
+}
+
+function showCarousal() {
+
+  let locationCarousel = document.querySelector("#location-carousel")
+  fetch(URL + "/locations")
+    .then((resp) => {
+      return resp.json()
+    }).then((locations) => {
+      locations.forEach((location) => {
+
+        if (location === locations[0]) {
+          let imageDiv = document.createElement('div')
+          imageDiv.classList = "carousel-item active"
+          let image = document.createElement("img")
+          image.src = location.image
+          image.classList = "d-block w-75" 
+          image.alt="First slide"
+        
+          imageDiv.append(image)
+          locationCarousel.append(imageDiv)
+          
+        
+        }
+        else {
+          let imageDiv = document.createElement('div')
+          imageDiv.classList = "carousel-item"
+          let image = document.createElement("img")
+          image.src = location.image
+          image.classList = "d-block w-75" 
+          image.alt="First slide"
+          imageDiv.append(image)
+          locationCarousel.append(imageDiv)
+          
+        }
+          
+    })
+  })
+
+  
+  
+
+  
+  // <div class="carousel-item active">
+  //               <img class="d-block w-100" src=".../800x400?auto=yes&bg=777&fg=555&text=First slide" alt="First slide">
+  //             </div>
+  //             <div class="carousel-item">
+  //               <img class="d-block w-100" src=".../800x400?auto=yes&bg=666&fg=444&text=Second slide" alt="Second slide">
+  //             </div>
+  //             <div class="carousel-item">
+  //               <img class="d-block w-100" src=".../800x400?auto=yes&bg=555&fg=333&text=Third slide" alt="Third slide">
+  //             </div>
+
 }
