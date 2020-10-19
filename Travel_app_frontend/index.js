@@ -4,8 +4,25 @@ const body = () => document.querySelector("body");
 let account =  null;
 document.addEventListener("DOMContentLoaded", () => {
   seeProfile();
+  getLocations();
 });
 
+function getLocations() {
+    let locationFrom = document.querySelector("#location-from")
+    let locationTo = document.querySelector("#location-to")
+    fetch(URL + "/locations")
+    .then(resp => resp.json())
+    .then(locations => {
+        locations.forEach(location => {
+            let fromOption = document.createElement("option")
+            fromOption.innerText = location.name
+            let toOption = document.createElement("option")
+            toOption.innerText = location.name
+            locationFrom.append(fromOption)
+            locationTo.append(toOption)
+        });
+    })
+}
 function seeProfile() {
 
   let createAccount = document.createElement("button");

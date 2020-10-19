@@ -1,3 +1,20 @@
 h2 {
     text-align: center;
 }
+
+.location-form {
+    text-align: left;
+}
+
+#location-from {
+    width: 25%;
+    display: inline-block;
+}
+
+#location-to {
+    width: 25%;
+    display: inline-block;
+}
+#date-form {
+    display: inline-flex;
+}
