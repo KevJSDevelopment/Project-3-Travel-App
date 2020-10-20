@@ -104,11 +104,10 @@ function showProfile(profileAccount) {
 
 function seeBookings(event) {
   event.preventDefault();
-  //  event.target[3].value
-  // event.target[2].value
+  
   let destination = event.target[1].value
   let bookingList = document.querySelector("#bookings-list")
-  console.log(bookingList)
+  //console.log(bookingList)
   
   fetch(URL + "/bookings", {
     method: "POST",
@@ -144,7 +143,7 @@ function seeBookings(event) {
       roomPrice.innerText= "Price: $" + room.price
 
       let bookingBtn = document.createElement("button")
-      bookingBtn.addEventListener("click", () => {
+      bookingBtn.addEventListener("click", (event) => {
 
         let modalDiv = document.createElement("div")
         modalDiv.classList = "modal" 
@@ -173,15 +172,15 @@ function seeBookings(event) {
         let modalBodyDiv = document.createElement("div")
         modalBodyDiv.classList = "modal-body"
         let fromTag = document.createElement("p")
-        fromTag.innerText = "from:"
+        fromTag.innerText =  event.target[0].value
         let toTag = document.createElement("p")
-        toTag.innerText = "to:"
+        toTag.innerText = event.target[1].value
         let roomPrice = document.createElement("p")
         roomPrice.innerText = `$${room.price}`
         let flightPrice  = document.createElement("p")
         flightPrice.innerText = "flight price"
         let tripDate = document.createElement("p")
-        tripDate.innerText = "MM/DD/YYYY"
+        tripDate.innerText = event.target[2].value + "-" +event.target[3].value
         let totalPrice = document.createElement("h4")
         totalPrice.innerHTML = `$${room.price}`
         modalBodyDiv.append(fromTag,toTag,roomPrice,flightPrice,tripDate,totalPrice)
@@ -212,7 +211,7 @@ function seeBookings(event) {
         body().append(modalDiv)
         modalDiv.style.display="block"
 
-
+a
         
       })
 
