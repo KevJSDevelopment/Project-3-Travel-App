@@ -117,7 +117,7 @@ function seeBookings(event) {
   })
   .then(res => res.json())
   .then(rooms => rooms.forEach(room => {   
-    // nested fetch request
+    // fetch to get rooms
     fetch(URL + "/hotels", {
       method: "POST", 
       headers: { "Content-Type": "application/json"},
@@ -125,6 +125,7 @@ function seeBookings(event) {
     })
     .then(resp => resp.json())
     .then(hotel => {
+      //fetch for each room's corresponding hotel
       let from = event.target[0].value
       let to = event.target[1].value
       let dateFrom = event.target[2].value
@@ -145,20 +146,19 @@ function seeBookings(event) {
 
       let roomPrice = document.createElement("p") 
       roomPrice.classList = "subtitle"
-      roomPrice.innerText= "Price: $" + room.price
+      roomPrice.innerText= "Price per night: $" + room.price
 
       let bookingBtn = document.createElement("button")
 
       bookingBtn.addEventListener("click", () => {
-        
+        // event listener for submitting a booking
         fetch(URL + "/flights", {
           method: "POST",
           headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ loc_from: from, loc_to: to, days_out: getDaysbetween(dateFrom)})
+          body: JSON.stringify({ loc_from: from, loc_to: to, days_out: getDaysBetween(dateFrom)})
         })
         .then(resp => resp.json())
         .then(travelPrice => {
-
           let modalDiv = document.createElement("div")
           modalDiv.classList = "modal" 
           modalDiv.tabIndex = "-1"
@@ -190,22 +190,25 @@ function seeBookings(event) {
           let toTag = document.createElement("p")
           toTag.innerText = "Arriving at: " + to
           let roomPrice = document.createElement("p")
-          roomPrice.innerText = `Hotel room price: $${room.price}`
+          roomPrice.innerText = `Hotel room price: $${room.price} per night`
           let flightPrice  = document.createElement("p")
           flightPrice.innerText = "Roundtrip flight price: $" + travelPrice.toFixed(2)
           let tripDate = document.createElement("p")
           tripDate.innerText = dateFrom + "-" + dateTo
           let totalPrice = document.createElement("h4")
-          totalPrice.innerHTML = `$${room.price}`
+
+          let daysBetween = getDays(dateFrom, dateTo)
+          let roomTotal = room.price * (daysBetween + 1)
+          let total = (travelPrice + roomTotal).toFixed(2)
+
+          totalPrice.innerHTML = `Trip Total: $ ${total}`
           modalBodyDiv.append(fromTag, toTag, roomPrice, flightPrice, tripDate, totalPrice)
           
           //footer
           let modalFooter = document.createElement("div")
           modalFooter.classList = "modal-footer"
           let backButton = document.createElement("button")
-          backButton.onclick = function () {
-            modalDiv.remove()
-          }
+          backButton.onclick = function () { modalDiv.remove() }
           backButton.type = "button"
           backButton.classList = "btn btn-secondary" 
           backButton.setAttribute("data-dismiss", "modal")
@@ -222,6 +225,7 @@ function seeBookings(event) {
           
           body().append(modalDiv)
           modalDiv.style.display="block"
+        // end of event listener
         })
         })
         bookingBtn.classList = "btn btn-success btn-sm booking-btn"
@@ -233,12 +237,14 @@ function seeBookings(event) {
         cardDiv.append(bookingBtn)
         roomDiv.append(cardDiv)
         bookingList.append(roomDiv)
+      // end of hotel fetch
     })
-    })
-  )
+    //end of rooms fetch
+    }))
+  // end of seeBookings function
 }
 
-function getDaysbetween(date) {
+function getDaysBetween(date) {
   let today = new Date();
   // let dd = String(today.getDate()).padStart(2, '0');
   // let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -254,6 +260,19 @@ function getDaysbetween(date) {
   // let dayPicked = date[1]
   // let yearPicked = date[2]
 
+}
+
+function getDays(date, date2) {
+  let from = new Date(date);
+  // let dd = String(today.getDate()).padStart(2, '0');
+  // let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  // let yyyy = today.getFullYear();
+  
+  // today = mm + '/' + dd + '/' + yyyy;
+  let to = new Date(date2)
+  let diffTime = Math.abs(to - from);
+  let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays 
 }
 
 function showCarousal() {
