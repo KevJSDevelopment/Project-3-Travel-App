@@ -144,6 +144,87 @@ function seeBookings(event) {
       roomPrice.innerText= "Price: $" + room.price
 
       let bookingBtn = document.createElement("button")
+      bookingBtn.addEventListener("click", () => {
+
+        let modalDiv = document.createElement("div")
+        modalDiv.classList = "modal" 
+        modalDiv.tabIndex = "-1"
+        modalDiv.role = "dialog"
+        
+        let dialogModal = document.createElement("div")
+        dialogModal.classList = "modal-dialog"
+        dialogModal.role = "document"
+
+        let modalContent = document.createElement("div")
+        modalContent.classList = "modal-content"
+        
+
+        // Header
+
+        let modalHeader = document.createElement("div")
+        modalHeader.classList = "modal-header"
+        let h5 = document.createElement("h5")
+        h5.classList = "modal-title"
+        h5.innerHTML = "Booking Information"
+        modalHeader.append(h5)
+
+        // BODY
+
+        let modalBodyDiv = document.createElement("div")
+        modalBodyDiv.classList = "modal-body"
+        let fromTag = document.createElement("p")
+        fromTag.innerText = "from:"
+        let toTag = document.createElement("p")
+        toTag.innerText = "to:"
+        let roomPrice = document.createElement("p")
+        roomPrice.innerText = `$${room.price}`
+        let flightPrice  = document.createElement("p")
+        flightPrice.innerText = "flight price"
+        let tripDate = document.createElement("p")
+        tripDate.innerText = "MM/DD/YYYY"
+        let totalPrice = document.createElement("h4")
+        totalPrice.innerHTML = `$${room.price}`
+        modalBodyDiv.append(fromTag,toTag,roomPrice,flightPrice,tripDate,totalPrice)
+
+
+
+        //footer
+        let modalFooter = document.createElement("div")
+        modalFooter.classList = "modal-footer"
+        let backButton = document.createElement("button")
+        backButton.onclick = function () {
+          modalDiv.remove()
+        }
+        backButton.type = "button"
+        backButton.classList = "btn btn-secondary" 
+        backButton.setAttribute("data-dismiss", "modal")
+        backButton.innerHTML = "Back"
+        let confirmButton = document.createElement('button')
+        confirmButton.type = "button"
+        confirmButton.classList = "btn btn-primary"
+        confirmButton.innerText = "Confirm Booking"
+        modalFooter.append(backButton, confirmButton)
+
+        modalContent.append(modalHeader, modalBodyDiv, modalFooter)
+        dialogModal.append(modalContent)
+        modalDiv.append(dialogModal)
+
+        body().append(modalDiv)
+        modalDiv.style.display="block"
+
+
+        
+      })
+
+
+
+
+
+
+
+
+
+
       bookingBtn.classList = "btn btn-success btn-sm booking-btn"
       bookingBtn.innerText = "Book Room"
 
