@@ -160,6 +160,7 @@ function seeBookings(event) {
         .then(resp => resp.json())
         .then(travelPrice => {
           let modalDiv = document.createElement("div")
+          
           modalDiv.classList = "modal" 
           modalDiv.tabIndex = "-1"
           modalDiv.role = "dialog"
@@ -214,17 +215,21 @@ function seeBookings(event) {
           backButton.setAttribute("data-dismiss", "modal")
           backButton.innerHTML = "Back"
           let confirmButton = document.createElement('button')
-          confirmButton.type = "button"
+          confirmButton.addEventListener("click", (event) => { confirmTrip(event,room.id,to,total,account) })
+          
+          confirmButton.type = "submit"
           confirmButton.classList = "btn btn-primary"
           confirmButton.innerText = "Confirm Booking"
           modalFooter.append(backButton, confirmButton)
+
           
           modalContent.append(modalHeader, modalBodyDiv, modalFooter)
           dialogModal.append(modalContent)
           modalDiv.append(dialogModal)
           
           body().append(modalDiv)
-          modalDiv.style.display="block"
+          modalDiv.style.display = "block"
+          
         // end of event listener
         })
         })
@@ -243,6 +248,26 @@ function seeBookings(event) {
     }))
   // end of seeBookings function
 }
+
+function confirmTrip(event,roomId,location, price,user) {
+  
+
+  fetch(URL + "/trips", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ room_id: roomId, location: location, price: price, traveler:user})
+  })
+    .then((resp) => {
+    return resp.json()
+    
+    })
+    .then((json) => {
+    console.log(json)
+  })
+}
+
+
+
 
 function getDaysBetween(date) {
   let today = new Date();
