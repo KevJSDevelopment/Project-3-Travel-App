@@ -262,7 +262,14 @@ function confirmTrip(event,roomId,location, price,user) {
     
     })
     .then((json) => {
-    console.log(json)
+      let currentTripButton = document.createElement("button")
+      currentTripButton.classList = "btn btn-light"
+      currentTripButton.innerText = "My Trip"
+      
+      nav().append(currentTripButton)
+      // modalDiv.remove()
+      // bookingList.remove()
+
   })
 }
 
