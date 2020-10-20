@@ -104,8 +104,9 @@ function showProfile(profileAccount) {
 
 function seeBookings(event) {
   event.preventDefault();
-  
+
   let destination = event.target[1].value
+
   let bookingList = document.querySelector("#bookings-list")
   //console.log(bookingList)
   
@@ -124,6 +125,10 @@ function seeBookings(event) {
     })
     .then(resp => resp.json())
     .then(hotel => {
+      let from = event.target[0].value
+      let to = event.target[1].value
+      let dateFrom = event.target[2].value
+      let dateTo = event.target[3].value
 
       let roomDiv = document.createElement("div")
       roomDiv.classList = "col-5"
@@ -143,105 +148,112 @@ function seeBookings(event) {
       roomPrice.innerText= "Price: $" + room.price
 
       let bookingBtn = document.createElement("button")
-      bookingBtn.addEventListener("click", (event) => {
 
-        let modalDiv = document.createElement("div")
-        modalDiv.classList = "modal" 
-        modalDiv.tabIndex = "-1"
-        modalDiv.role = "dialog"
+      bookingBtn.addEventListener("click", () => {
         
-        let dialogModal = document.createElement("div")
-        dialogModal.classList = "modal-dialog"
-        dialogModal.role = "document"
+        fetch(URL + "/flights", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ loc_from: from, loc_to: to, days_out: getDaysbetween(dateFrom)})
+        })
+        .then(resp => resp.json())
+        .then(travelPrice => {
 
-        let modalContent = document.createElement("div")
-        modalContent.classList = "modal-content"
+          let modalDiv = document.createElement("div")
+          modalDiv.classList = "modal" 
+          modalDiv.tabIndex = "-1"
+          modalDiv.role = "dialog"
+          
+          let dialogModal = document.createElement("div")
+          dialogModal.classList = "modal-dialog"
+          dialogModal.role = "document"
+          
+          let modalContent = document.createElement("div")
+          modalContent.classList = "modal-content"
+          
+          
+          // Header
+          
+          let modalHeader = document.createElement("div")
+          modalHeader.classList = "modal-header"
+          let h5 = document.createElement("h5")
+          h5.classList = "modal-title"
+          h5.innerHTML = "Booking Information"
+          modalHeader.append(h5)
+          
+          // BODY
+          
+          let modalBodyDiv = document.createElement("div")
+          modalBodyDiv.classList = "modal-body"
+          let fromTag = document.createElement("p")
+          fromTag.innerText = "Leaving from: " + from
+          let toTag = document.createElement("p")
+          toTag.innerText = "Arriving at: " + to
+          let roomPrice = document.createElement("p")
+          roomPrice.innerText = `Hotel room price: $${room.price}`
+          let flightPrice  = document.createElement("p")
+          flightPrice.innerText = "Roundtrip flight price: $" + travelPrice.toFixed(2)
+          let tripDate = document.createElement("p")
+          tripDate.innerText = dateFrom + "-" + dateTo
+          let totalPrice = document.createElement("h4")
+          totalPrice.innerHTML = `$${room.price}`
+          modalBodyDiv.append(fromTag, toTag, roomPrice, flightPrice, tripDate, totalPrice)
+          
+          //footer
+          let modalFooter = document.createElement("div")
+          modalFooter.classList = "modal-footer"
+          let backButton = document.createElement("button")
+          backButton.onclick = function () {
+            modalDiv.remove()
+          }
+          backButton.type = "button"
+          backButton.classList = "btn btn-secondary" 
+          backButton.setAttribute("data-dismiss", "modal")
+          backButton.innerHTML = "Back"
+          let confirmButton = document.createElement('button')
+          confirmButton.type = "button"
+          confirmButton.classList = "btn btn-primary"
+          confirmButton.innerText = "Confirm Booking"
+          modalFooter.append(backButton, confirmButton)
+          
+          modalContent.append(modalHeader, modalBodyDiv, modalFooter)
+          dialogModal.append(modalContent)
+          modalDiv.append(dialogModal)
+          
+          body().append(modalDiv)
+          modalDiv.style.display="block"
+        })
+        })
+        bookingBtn.classList = "btn btn-success btn-sm booking-btn"
+        bookingBtn.innerText = "Book Room"
         
-
-        // Header
-
-        let modalHeader = document.createElement("div")
-        modalHeader.classList = "modal-header"
-        let h5 = document.createElement("h5")
-        h5.classList = "modal-title"
-        h5.innerHTML = "Booking Information"
-        modalHeader.append(h5)
-
-        // BODY
-
-        let modalBodyDiv = document.createElement("div")
-        modalBodyDiv.classList = "modal-body"
-        let fromTag = document.createElement("p")
-        fromTag.innerText =  event.target[0].value
-        let toTag = document.createElement("p")
-        toTag.innerText = event.target[1].value
-        let roomPrice = document.createElement("p")
-        roomPrice.innerText = `$${room.price}`
-        let flightPrice  = document.createElement("p")
-        flightPrice.innerText = "flight price"
-        let tripDate = document.createElement("p")
-        tripDate.innerText = event.target[2].value + "-" +event.target[3].value
-        let totalPrice = document.createElement("h4")
-        totalPrice.innerHTML = `$${room.price}`
-        modalBodyDiv.append(fromTag,toTag,roomPrice,flightPrice,tripDate,totalPrice)
-
-
-
-        //footer
-        let modalFooter = document.createElement("div")
-        modalFooter.classList = "modal-footer"
-        let backButton = document.createElement("button")
-        backButton.onclick = function () {
-          modalDiv.remove()
-        }
-        backButton.type = "button"
-        backButton.classList = "btn btn-secondary" 
-        backButton.setAttribute("data-dismiss", "modal")
-        backButton.innerHTML = "Back"
-        let confirmButton = document.createElement('button')
-        confirmButton.type = "button"
-        confirmButton.classList = "btn btn-primary"
-        confirmButton.innerText = "Confirm Booking"
-        modalFooter.append(backButton, confirmButton)
-
-        modalContent.append(modalHeader, modalBodyDiv, modalFooter)
-        dialogModal.append(modalContent)
-        modalDiv.append(dialogModal)
-
-        body().append(modalDiv)
-        modalDiv.style.display="block"
-
-a
-        
-      })
-
-
-
-
-
-
-
-
-
-
-      bookingBtn.classList = "btn btn-success btn-sm booking-btn"
-      bookingBtn.innerText = "Book Room"
-
-      cardDiv.append(hotelName)
-      cardDiv.append(roomNum)
-      cardDiv.append(roomPrice)
-      cardDiv.append(bookingBtn)
-      roomDiv.append(cardDiv)
-      bookingList.append(roomDiv)
+        cardDiv.append(hotelName)
+        cardDiv.append(roomNum)
+        cardDiv.append(roomPrice)
+        cardDiv.append(bookingBtn)
+        roomDiv.append(cardDiv)
+        bookingList.append(roomDiv)
     })
-
-
-
-      // <div class="col-5">
-			// 	<div class="card card-block card-1"></div>
-			// </div>
     })
   )
+}
+
+function getDaysbetween(date) {
+  let today = new Date();
+  // let dd = String(today.getDate()).padStart(2, '0');
+  // let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  // let yyyy = today.getFullYear();
+  
+  // today = mm + '/' + dd + '/' + yyyy;
+  let newDate = new Date(date)
+  let diffTime = Math.abs(newDate - today);
+  let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays 
+  // let dateArray = date.split("/")
+  // let monthPicked = date[0]
+  // let dayPicked = date[1]
+  // let yearPicked = date[2]
+
 }
 
 function showCarousal() {
