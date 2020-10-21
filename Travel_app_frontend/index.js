@@ -108,7 +108,7 @@ function seeBookings(event) {
   let destination = event.target[1].value
 
   let bookingList = document.querySelector("#bookings-list")
-  //console.log(bookingList)
+  //console.log( bookingList )
   
   fetch(URL + "/bookings", {
     method: "POST",
@@ -133,6 +133,7 @@ function seeBookings(event) {
 
       let roomDiv = document.createElement("div")
       roomDiv.classList = "col-5"
+      
 
       let cardDiv = document.createElement("div")
       cardDiv.classList = "card card-block"
@@ -162,6 +163,7 @@ function seeBookings(event) {
           let modalDiv = document.createElement("div")
           
           modalDiv.classList = "modal" 
+          modalDiv.id ="modal"
           modalDiv.tabIndex = "-1"
           modalDiv.role = "dialog"
           
@@ -215,6 +217,7 @@ function seeBookings(event) {
           backButton.setAttribute("data-dismiss", "modal")
           backButton.innerHTML = "Back"
           let confirmButton = document.createElement('button')
+          
           confirmButton.addEventListener("click", (event) => { confirmTrip(event,room.id,to,total,account) })
           
           confirmButton.type = "submit"
@@ -241,7 +244,8 @@ function seeBookings(event) {
         cardDiv.append(roomPrice)
         cardDiv.append(bookingBtn)
         roomDiv.append(cardDiv)
-        bookingList.append(roomDiv)
+      bookingList.append(roomDiv)
+      
       // end of hotel fetch
     })
     //end of rooms fetch
@@ -264,15 +268,34 @@ function confirmTrip(event,roomId,location, price,user) {
     .then((json) => {
       let currentTripButton = document.createElement("button")
       currentTripButton.classList = "btn btn-light"
-      currentTripButton.innerText = "My Trip"
+      currentTripButton.innerText = "My Trips"
+      currentTripButton.addEventListener("click", myTrips)
       
       nav().append(currentTripButton)
-      // modalDiv.remove()
-      // bookingList.remove()
+      let bookingLi = document.querySelector("#bookings")
+      let locationForm = document.querySelector("#location-form")
+     
+      bookingLi.remove()
+      locationForm.remove()
+      let modal = document.querySelector("#modal")
+      modal.remove()
+      let carousel = document.querySelector('#carouselExampleFade')
+      carousel.remove()
+     
 
   })
 }
 
+function myTrips() {
+  // console.log("chexking")
+  fetch(URL + "/trips")
+    .then((resp) => {
+    return resp.json()
+  })
+    .then((json) => {
+    console.log(json)
+  })
+}
 
 
 
@@ -310,6 +333,7 @@ function getDays(date, date2) {
 function showCarousal() {
 
   let locationCarousel = document.querySelector("#location-carousel")
+  //console.log(locationCarousel)
   fetch(URL + "/locations")
     .then((resp) => {
       return resp.json()
