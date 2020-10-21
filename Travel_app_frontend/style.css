@@ -31,6 +31,26 @@ a#prev{
 a#next{
     width: 60%;
 }
+
+/* css for trip list */ 
+
+/* .container {
+    height: 300px;
+  -webkit-columns: 3;
+     -moz-columns: 3;
+          columns: 3;
+  -moz-column-fill: balance;
+       column-fill: balance;
+} 
+.row {
+    display: flex;
+    flex-wrap: wrap;
+ }
+ 
+ .row > div[class*='col-'] {
+   display: flex;
+ } */
+ 
 /* css for bookings */
 
 .booking-btn {

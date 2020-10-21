@@ -104,10 +104,13 @@ function showProfile(profileAccount) {
 
 function seeBookings(event) {
   event.preventDefault();
-
   let destination = event.target[1].value
-
+  
   let bookingList = document.querySelector("#bookings-list")
+
+  while (bookingList.firstChild) {
+    bookingList.removeChild(bookingList.firstChild);
+  } 
   //console.log( bookingList )
   
   fetch(URL + "/bookings", {
@@ -130,27 +133,26 @@ function seeBookings(event) {
       let to = event.target[1].value
       let dateFrom = event.target[2].value
       let dateTo = event.target[3].value
-
+      
       let roomDiv = document.createElement("div")
       roomDiv.classList = "col-5"
       
-
       let cardDiv = document.createElement("div")
       cardDiv.classList = "card card-block"
-
+      
       let hotelName = document.createElement("h2")
       hotelName.innerText = hotel.name
-
+      
       let roomNum = document.createElement("p") 
       roomNum.classList = "subtitle"
       roomNum.innerText= "Room number: " + room.id
-
+      
       let roomPrice = document.createElement("p") 
       roomPrice.classList = "subtitle"
       roomPrice.innerText= "Price per night: $" + room.price
-
+      
       let bookingBtn = document.createElement("button")
-
+      
       bookingBtn.addEventListener("click", () => {
         // event listener for submitting a booking
         fetch(URL + "/flights", {
@@ -199,11 +201,11 @@ function seeBookings(event) {
           let tripDate = document.createElement("p")
           tripDate.innerText = dateFrom + "-" + dateTo
           let totalPrice = document.createElement("h4")
-
+          
           let daysBetween = getDays(dateFrom, dateTo)
           let roomTotal = room.price * (daysBetween + 1)
           let total = (travelPrice + roomTotal).toFixed(2)
-
+          
           totalPrice.innerHTML = `Trip Total: $ ${total}`
           modalBodyDiv.append(fromTag, toTag, roomPrice, flightPrice, tripDate, totalPrice)
           
@@ -218,13 +220,13 @@ function seeBookings(event) {
           backButton.innerHTML = "Back"
           let confirmButton = document.createElement('button')
           
-          confirmButton.addEventListener("click", (event) => { confirmTrip(event,room.id,to,total,account) })
+          confirmButton.addEventListener("click", (event) => { confirmTrip(event,room.id,to,total,account, dateFrom, dateTo) })
           
           confirmButton.type = "submit"
           confirmButton.classList = "btn btn-primary"
           confirmButton.innerText = "Confirm Booking"
           modalFooter.append(backButton, confirmButton)
-
+          
           
           modalContent.append(modalHeader, modalBodyDiv, modalFooter)
           dialogModal.append(modalContent)
@@ -233,33 +235,34 @@ function seeBookings(event) {
           body().append(modalDiv)
           modalDiv.style.display = "block"
           
-        // end of event listener
+          // end of event listener
         })
-        })
-        bookingBtn.classList = "btn btn-success btn-sm booking-btn"
-        bookingBtn.innerText = "Book Room"
-        
-        cardDiv.append(hotelName)
-        cardDiv.append(roomNum)
-        cardDiv.append(roomPrice)
-        cardDiv.append(bookingBtn)
-        roomDiv.append(cardDiv)
+      })
+      bookingBtn.classList = "btn btn-success btn-sm booking-btn"
+      bookingBtn.innerText = "Book Room"
+      
+      cardDiv.append(hotelName)
+      cardDiv.append(roomNum)
+      cardDiv.append(roomPrice)
+      cardDiv.append(bookingBtn)
+      roomDiv.append(cardDiv)
       bookingList.append(roomDiv)
       
+      // let locForm = document.querySelector("#location-form")
+      // locForm.reset()
       // end of hotel fetch
     })
     //end of rooms fetch
-    }))
+  }))
   // end of seeBookings function
 }
 
-function confirmTrip(event,roomId,location, price,user) {
-  
-
+function confirmTrip(event, roomId, location, price,user, dateFrom, dateTo) {
+  // debugger
   fetch(URL + "/trips", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ room_id: roomId, location: location, price: price, traveler:user})
+    body: JSON.stringify({ room_id: roomId, location: location, price: price, traveler: user, date_from: dateFrom, date_to: dateTo})
   })
     .then((resp) => {
     return resp.json()
@@ -281,19 +284,77 @@ function confirmTrip(event,roomId,location, price,user) {
       modal.remove()
       let carousel = document.querySelector('#carouselExampleFade')
       carousel.remove()
-     
+      
+      myTrips();
 
   })
 }
 
 function myTrips() {
   // console.log("chexking")
+  let container = document.createElement("div")
+  container.classList = "container"
+  
   fetch(URL + "/trips")
     .then((resp) => {
     return resp.json()
   })
-    .then((json) => {
-    console.log(json)
+    .then((trips) => {
+    trips.forEach(trip => {
+      fetch(URL + "/locations/" + trip.location_id)
+      .then(res => res.json())
+      .then(loc => {
+
+        let card = document.createElement("card")
+        card.classList = "card"
+        card.style.width = "18rem"
+
+        let img = document.createElement("img")
+        img.classList = "card-img-top"
+        img.src = loc.image
+        img.alt = "Card image cap"
+
+        let div = document.createElement("div")
+        div.classList = "card-body"
+
+        let h5 = document.createElement("h5")
+        h5.classList = "card-title"
+        h5.innerText = "Trip ID: " + trip.id
+
+        let p = document.createElement("p")
+        p.classList = "card-text"
+        p.innerText = "Status: " + trip.status
+
+        let p1 = document.createElement("p")
+        p1.classList = "card-text"
+        p1.innerText = "Destination: " + loc.name
+
+        let p2 = document.createElement("p")
+        p2.classList = "card-text"
+        p2.innerText = "Date: " + trip.date_from + "-" + trip.date_to
+
+        let p3 = document.createElement("p")
+        p3.classList = "card-text"
+        p3.innerText = "Trip Cost: $" + trip.price
+
+        let button = document.createElement("button")
+        button.classList = "btn btn-info btn-sm"
+        button.innerText = "Edit Trip"
+
+        div.append(h5, p, p1, p2, p3, button)
+        card.append(img, div)
+        container.append(card)
+        body().append(container)
+        // <div class="card" style="width: 18rem;">
+        //   <img class="card-img-top" src="..." alt="Card image cap">
+        //   <div class="card-body">
+        //     <h5 class="card-title">Card title</h5>
+        //     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        //     <a href="#" class="btn btn-primary">Go somewhere</a>
+        //   </div>
+        // </div>
+      })
+    })
   })
 }
 
