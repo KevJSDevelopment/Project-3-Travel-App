@@ -1,35 +1,119 @@
 const URL = "http://localhost:3000";
 const nav = () => document.querySelector("nav");
 const body = () => document.querySelector("body");
+const cont = () => document.querySelector("div.container-body");
 // const bookingsList = () => document.querySelector("#bookings")
 let account =  null;
 document.addEventListener("DOMContentLoaded", () => {
   seeProfile();
   getDestinations();
-  showCarousel()
+  showCarousel();
   // bookingsList().remove();
 });
 
 function getDestinations() {
-    let locationFrom = document.querySelector("#location-from")
-    let locationTo = document.querySelector("#location-to")
-    let locForm = document.querySelector("#location-form")
+  while (cont().firstChild) {
+    cont().removeChild(cont().firstChild);
+  } 
+  cont().innerHTML = `<form id="location-form">
+  <select class="form-control form-control-lg" id="location-from">
     
-    fetch(URL + "/destinations")
-    .then(resp => resp.json())
-    .then(destinations => {
-      destinations.forEach(destination => {
-        let fromOption = document.createElement("option")
-        fromOption.innerText = destination.name
-        let toOption = document.createElement("option")
-        toOption.innerText = destination.name
-        locationFrom.append(fromOption)
-        locationTo.append(toOption)
-      });
-    })
+  </select>
+  <select class="form-control form-control-lg" id="location-to">
+      
+  </select>
+    <!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+    <div class="bootstrap-iso">
+    <div class="container-fluid">
+      <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <form class="form-horizontal" method="post" id="date-form">
+        <div class="form-group ">
+          <label class="control-label col-sm-2 requiredField" for="date">
+          From: 
+          </label>
+          <div class="col-sm-10">
+          <div class="input-group">
+            <div class="input-group-addon">
+            <i class="fa fa-calendar">
+            </i>
+            </div>
+            <input class="form-control" id="fromDate" name="date" placeholder="MM/DD/YYYY" type="text"/>
+          </div>
+          </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2 requiredField" for="date">
+            To: 
+            </label>
+            <div class="col-sm-10">
+            <div class="input-group">
+              <div class="input-group-addon">
+              <i class="fa fa-calendar">
+              </i>
+              </div>
+              <input class="form-control" id="toDate" name="date" placeholder="MM/DD/YYYY" type="text"/>
+            </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2">
+            <button class="btn btn-primary " name="submit" type="submit" id="travel-button">
+              Submit
+            </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      </div>
+    </div>
+    </div>
+</form>
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+    <div id="location-carousel"class="carousel-inner">
+      
+    </div>
+    <a id="prev"class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a id="next"class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+<div>
+   
+<div class="container-fluid" id="bookings">
+  <h1 class="mt-5">Available Bookings</h1>
+  <p class="subtitle">List of all rooms that are available</p>
+  <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4" id="bookings-list">
+    
+  </div>
+</div>
+</div>` 
+  showCarousel()
+  let locationFrom = document.querySelector("#location-from")
+  let locationTo = document.querySelector("#location-to")
+  let locForm = document.querySelector("#location-form")
+  
 
-    locForm.addEventListener("submit", seeBookings)
+  fetch(URL + "/destinations")
+  .then(resp => resp.json())
+  .then(destinations => {
+    destinations.forEach(destination => {
+      let fromOption = document.createElement("option")
+      fromOption.innerText = destination.name
+      let toOption = document.createElement("option")
+      toOption.innerText = destination.name
+      locationFrom.append(fromOption)
+      locationTo.append(toOption)
+    });
+  })
+
+  locForm.addEventListener("submit", seeBookings)
 }
+
 function seeProfile() {
 
   let createAccount = document.createElement("button");
@@ -68,20 +152,32 @@ function seeProfile() {
             account = currentAccount 
             createAccount.remove()
             accountForm.remove()
-
+            
             let profile = document.createElement("button");
             profile.classList = "btn btn-light";
             profile.innerText = "Profile";
 
+            let tripsBtn = document.createElement("button");
+            tripsBtn.classList = "btn btn-light";
+            tripsBtn.innerText = "My Trips";
+
+            let bookTrip = document.createElement("button");
+            bookTrip.classList = "btn btn-light";
+            bookTrip.innerText = "New Trip";
+
             profile.addEventListener('click', () => { showProfile(account) })
 
-            nav().append(profile);
+            tripsBtn.addEventListener('click', myTrips)
+
+            bookTrip.addEventListener('click', getDestinations)
+
+            nav().append(profile, tripsBtn, bookTrip);
       })
     });
     nameDiv.append(nameLabel, nameInput, loginButton);
     accountForm.append(nameDiv);
 
-    body().append(accountForm);
+    cont().append(accountForm);
   });
 
   nav().append(createAccount);
@@ -99,7 +195,7 @@ function showProfile(profileAccount) {
     profileName.innerText = profileAccount.name
     profileName.classList = "card-title"
     profileDiv.append(profileName)
-    body().append(profileDiv)
+    cont().append(profileDiv)
 }
 
 function seeBookings(event) {
@@ -202,12 +298,6 @@ function confirmTrip(event, roomId, location, destination, travelPrice, roomPric
     
     })
     .then((json) => {
-      let currentTripButton = document.createElement("button")
-      currentTripButton.classList = "btn btn-light"
-      currentTripButton.innerText = "My Trips"
-      currentTripButton.addEventListener("click", myTrips)
-      
-      nav().append(currentTripButton)
       let bookingLi = document.querySelector("#bookings")
       let locationForm = document.querySelector("#location-form")
      
@@ -228,15 +318,20 @@ function myTrips() {
   if(prevContainer != null){
     prevContainer.remove()
   }
+  while (cont().firstChild) {
+    cont().removeChild(cont().firstChild);
+  } 
 
   let container = document.createElement("div")
   container.classList = "container"
   container.id = "trip-container"
   
-  fetch(URL + "/trips")
-    .then((resp) => {
-    return resp.json()
+  fetch(URL + "/trips", {
+    method: "PUT",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({account: account})
   })
+    .then((resp) => resp.json())
     .then((trips) => {
     trips.forEach(trip => {
       fetch(URL + "/destinations/" + trip.destination_id)
@@ -245,6 +340,7 @@ function myTrips() {
         let card = document.createElement("card")
         card.classList = "card"
         card.style.width = "18rem"
+        card.id = "card-"+ trip.id
 
         let img = document.createElement("img")
         img.classList = "card-img-top"
@@ -279,14 +375,18 @@ function myTrips() {
         .then(resp => resp.json())
         .then(room => {
           button.addEventListener('click', () => {
-            makeModal(room, trip.travel_price, trip.location_id, trip.destination_id, trip.date_from, trip.date_to, trip)
+            fetch(URL + "/trips/" + trip.id)
+            .then(resp => resp.json())
+            .then(newTrip => {
+              makeModal(room, newTrip.travel_price, newTrip.location_id, newTrip.destination_id, newTrip.date_from, newTrip.date_to, newTrip)
+            })
           })
         })
         
         div.append(h5, p1, p2, p3, button)
         card.append(img, div)
         container.append(card)
-        body().append(container)
+        cont().append(container)
       })
     })
   })
@@ -296,7 +396,6 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
   
   if(trip != null){
     let modalDiv = document.createElement("div")
-            
     modalDiv.classList = "modal" 
     modalDiv.id ="modal"
     modalDiv.tabIndex = "-1"
@@ -341,7 +440,7 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
 
     let startDate = document.createElement("input")
     startDate.type ="text"
-    startDate.classList = "form-control"
+    startDate.classList = "form-control date-picker"
     startDate.value = dateFrom
 
     let startAddOn = document.createElement("div")
@@ -355,30 +454,52 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
 
     let endDate = document.createElement("input")
     endDate.type ="text"
-    endDate.classList = "form-control"
+    endDate.classList = "form-control date-picker"
     endDate.value = dateTo
 
     let endAddOn = document.createElement("div")
     endAddOn.classList = "input-group-addon"
-
+    
     let endSpan = document.createElement("span")
     endSpan.classList = "glyphicon glyphicon-th"
-
+    
     endAddOn.append(endSpan)
     endDate.append(endAddOn)
-
+    
     startingDate.append(startDate)
     endingDate.append(endDate)
-
-    let totalPrice = document.createElement("h4")
     
+    let totalPrice = document.createElement("h4")
+    totalPrice.id = "total-price"
     let daysBetween = getDays(dateFrom, dateTo)
     let roomTotal = room.price * (daysBetween + 1)
-    let total = (room.price + roomTotal).toFixed(2)
+    let total = (travelPrice + roomTotal).toFixed(2)
     totalPrice.innerHTML = `Trip Total: $ ${total}`
     
     modalBodyDiv.append(fromTag, toTag, roomPrice, flightPrice, startingDate, endingDate, totalPrice)
-    
+    // startDate.value.addEventListener("change", (ev) => {
+    //   let tripDays = getDays(startDate.value, endDate.value)
+    //   let roomTot = room.price * (tripDays + 1)
+    //   let newTotal = (travelPrice + roomTot).toFixed(2)
+    //   totalPrice.innerHTML = `Trip Total: $ ${newTotal}`
+    //   debugger
+    // })
+    // endDate.value.addEventListener("change", (ev) => {
+    //   let tripDays = getDays(startDate.value, endDate.value)
+    //   let roomTot = room.price * (tripDays + 1)
+    //   let newTotal = (travelPrice + roomTot).toFixed(2)
+    //   totalPrice.innerHTML = `Trip Total: $ ${newTotal}`
+    //   debugger
+    // })
+    debugger
+    $('.date-picker').on('dp.change', function(e){ 
+      debugger
+      let priceTotal = document.querySelector("#total-price")
+      let tripDays = getDays(startDate.value, endDate.value)
+      let roomTot = room.price * (tripDays + 1)
+      let newTotal = (travelPrice + roomTot).toFixed(2)
+      priceTotal.innerHTML = `Trip Total: $ ${newTotal}`
+    })
     //footer
     let modalFooter = document.createElement("div")
     modalFooter.classList = "modal-footer"
@@ -394,22 +515,32 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
     confirmButton.innerText = "Confirm Booking"
     modalFooter.append(backButton, confirmButton)
     
-    modalContent.addEventListener("submit", () => { 
-      debugger
-      fetch(URL + "/trips/" + trip.id, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date_from: event.target, date_to: event})
-      }).then((resp) => resp.json())
-        .then((trip) => console.log(trip))
-    })
     
     modalContent.append(modalHeader, modalBodyDiv, modalFooter)
     dialogModal.append(modalContent)
     modalDiv.append(dialogModal)
     
-    body().append(modalDiv)
+    cont().append(modalDiv)
     modalDiv.style.display = "block"
+    modalContent.addEventListener("submit", (event) => { 
+      event.preventDefault()
+      fetch(URL + "/trips/" + trip.id, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date_from: event.target[0].value, date_to: event.target[1].value})
+      }).then((resp) => resp.json())
+        .then((updatedTrip) => {
+          let modal = document.querySelector("#modal")
+          modal.remove()
+
+          let card = document.querySelector("#card-" + updatedTrip.id)
+          card.children[1].children[2].innerText = "Date: " + updatedTrip.date_from + "-" + updatedTrip.date_to
+          let tripDays = getDays(updatedTrip.date_from, updatedTrip.date_to)
+          let roomTotal = room.price * (tripDays + 1)
+          let total = (updatedTrip.travel_price + roomTotal).toFixed(2)
+          card.children[1].children[3].innerText = `Trip Total: $ ${total}`
+        })
+    })
   }
   else {
     let modalDiv = document.createElement("div")
@@ -454,7 +585,7 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
     
     let daysBetween = getDays(dateFrom, dateTo)
     let roomTotal = room.price * (daysBetween + 1)
-    let total = (room.price + roomTotal).toFixed(2)
+    let total = (travelPrice + roomTotal).toFixed(2)
     totalPrice.innerHTML = `Trip Total: $ ${total}`
     modalBodyDiv.append(fromTag, toTag, roomPrice, flightPrice, tripDate, totalPrice)
     //footer
@@ -480,10 +611,9 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
     dialogModal.append(modalContent)
     modalDiv.append(dialogModal)
     
-    body().append(modalDiv)
+    cont().append(modalDiv)
     modalDiv.style.display = "block"
   }
-  
   
 }
 
