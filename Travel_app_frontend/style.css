@@ -1,7 +1,70 @@
-h2 {
+h2 { 
     text-align: center;
+    color: white;
+    text-transform: uppercase;
+    padding: 1px;
+    font-family: 'Raleway';
+    font-weight: 75;
+    position: relative;
+    background: -webkit-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+    background: -moz-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+    background: -ms-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+    background: -o-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+  }
+  h2:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -50px;
+    width: 600px;
+    margin-left: -300px;
+    margin-top: -220px;
+    height: 200px;
+    background: -webkit-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
+    background: -moz-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
+    background: -ms-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
+    background: -o-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
+    z-index: -1;
+  }
+  h2 a {
+    background: darkcyan;
+    display: block;
+    padding: 20px;
+    text-decoration: none;
+    letter-spacing: 30px;
+    color: white;
+  }
+
+.navbar-custom { 
+    background-color: darkcyan; 
+} 
+.body-container {
+    margin: auto;
 }
 
+#edit-acc {
+    margin: 5px;
+    float: right;
+}
+#delete-acc {
+    margin: 5px;
+    float: left;
+}
+.card-div {
+    text-align: center;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    border: 2px solid grey;
+    border-radius: 10px;
+}
+.form-group {
+    margin: 15px;
+}
+.form-control {
+    margin: 5px;
+}
 .location-form {
     display: inline-flex;
 }
@@ -50,7 +113,7 @@ a#next{
  .row > div[class*='col-'] {
    display: flex;
  } */
- 
+
 /* css for bookings */
 
 .booking-btn {

@@ -2,12 +2,16 @@ const URL = "http://localhost:3000";
 const nav = () => document.querySelector("nav");
 const body = () => document.querySelector("body");
 const cont = () => document.querySelector("div.container-body");
+const title = () => document.querySelector("#app-title");
+const alertCont = () => document.querySelector(".alert-container")
 // const bookingsList = () => document.querySelector("#bookings")
-let account =  null;
+let account = null;
+let keepAlert = false;
 document.addEventListener("DOMContentLoaded", () => {
   seeProfile();
   getDestinations();
   showCarousel();
+  title().addEventListener('click', getDestinations)
   // bookingsList().remove();
 });
 
@@ -15,6 +19,15 @@ function getDestinations() {
   while (cont().firstChild) {
     cont().removeChild(cont().firstChild);
   } 
+  if(keepAlert === false){
+    while(alertCont().firstChild) {
+      alertCont().removeChild(alertCont().firstChild);
+    }
+  }
+  else 
+  {
+    keepAlert = false
+  }
   cont().innerHTML = `<form id="location-form">
   <select class="form-control form-control-lg" id="location-from">
     
@@ -121,11 +134,17 @@ function seeProfile() {
   createAccount.innerText = "Create Account";
 
   createAccount.addEventListener("click", () => {
+    while (cont().firstChild) {
+      cont().removeChild(cont().firstChild);
+    } 
+    let accountDiv = document.createElement("div")
+    accountDiv.classList = "card-div"
+
     let accountForm = document.createElement("form");
     let nameDiv = document.createElement("div");
     nameDiv.classList = "form-group";
     let nameLabel = document.createElement("label");
-    nameLabel.innerText = "Username";
+    nameLabel.innerText = "Create New Account";
     let nameInput = document.createElement("input");
     nameInput.type = "username";
     nameInput.classList = "form-control";
@@ -133,7 +152,7 @@ function seeProfile() {
     let loginButton = document.createElement("button");
     loginButton.type = "submit";
     loginButton.value = "Submit";
-    loginButton.innerText = "submit";
+    loginButton.innerText = "Create account";
     loginButton.classList = "btn btn-success";
 
     accountForm.addEventListener("submit", (ev) => {
@@ -148,22 +167,27 @@ function seeProfile() {
             body: JSON.stringify({ name: ev.target[0].value })
         })
         .then((resp) => resp.json())
-        .then(currentAccount => {
-            account = currentAccount 
+        .then(newAccount => {
+          if(newAccount != "You must have a username"){
+            account = newAccount 
+            loginBtn.remove()
             createAccount.remove()
             accountForm.remove()
             
             let profile = document.createElement("button");
             profile.classList = "btn btn-light";
             profile.innerText = "Profile";
+            profile.id = "prof-btn"
 
             let tripsBtn = document.createElement("button");
             tripsBtn.classList = "btn btn-light";
             tripsBtn.innerText = "My Trips";
+            tripsBtn.id = "trips-btn"
 
             let bookTrip = document.createElement("button");
             bookTrip.classList = "btn btn-light";
             bookTrip.innerText = "New Trip";
+            bookTrip.id = "new-trip-btn"
 
             profile.addEventListener('click', () => { showProfile(account) })
 
@@ -172,30 +196,225 @@ function seeProfile() {
             bookTrip.addEventListener('click', getDestinations)
 
             nav().append(profile, tripsBtn, bookTrip);
+            getDestinations();
+          }
+          else 
+          {
+            while(alertCont().firstChild) {
+              alertCont().removeChild(alertCont().firstChild);
+            }
+            let myAlert = document.createElement("div")
+            myAlert.classList = "alert alert-danger"
+            myAlert.role = "alert"
+            myAlert.innerText = newAccount
+    
+            alertCont().appendChild(myAlert)
+          }
       })
     });
     nameDiv.append(nameLabel, nameInput, loginButton);
     accountForm.append(nameDiv);
-
-    cont().append(accountForm);
+    accountDiv.append(accountForm);
+    cont().append(accountDiv);
   });
 
-  nav().append(createAccount);
+  let loginBtn = document.createElement("button")
+  loginBtn.classList = "btn btn-light";
+  loginBtn.innerText = "login";
+
+  loginBtn.addEventListener("click" , () => {
+    while (cont().firstChild) {
+      cont().removeChild(cont().firstChild);
+    } 
+    let loginDiv = document.createElement("div")
+    loginDiv.classList = "card-div"
+    let loginForm = document.createElement("form");
+    let divName = document.createElement("div");
+    divName.classList = "form-group";
+    let nameLab = document.createElement("label");
+    nameLab.innerText = "Login";
+    let nameInfo = document.createElement("input");
+    nameInfo.type = "username";
+    nameInfo.classList = "form-control";
+    nameInfo.placeholder = "Enter username";
+    let submitLogin = document.createElement("button");
+    submitLogin.type = "submit";
+    submitLogin.value = "Submit";
+    submitLogin.innerText = "submit login";
+    submitLogin.classList = "btn btn-success";
+
+    loginForm.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+
+      fetch(URL + "/travelers/login", {
+        method: "POST",
+        headers: {
+            "Content-Type" : "application/json",
+            "Accept" : "application/json"
+        },
+        body: JSON.stringify({ name: ev.target[0].value })
+      })
+    .then(resp => resp.json())
+    .then(currentAccount => {
+      if(currentAccount === "No user found") {
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
+        let myAlert = document.createElement("div")
+        myAlert.classList = "alert alert-danger"
+        myAlert.role = "alert"
+        myAlert.innerText = currentAccount
+
+        alertCont().appendChild(myAlert)
+      }
+      else
+      {
+        account = currentAccount
+        loginBtn.remove()
+        createAccount.remove()
+        loginForm.remove()
+        
+        let profile = document.createElement("button");
+        profile.classList = "btn btn-light";
+        profile.innerText = "Profile";
+
+        let tripsBtn = document.createElement("button");
+        tripsBtn.classList = "btn btn-light";
+        tripsBtn.innerText = "My Trips";
+
+        let bookTrip = document.createElement("button");
+        bookTrip.classList = "btn btn-light";
+        bookTrip.innerText = "New Trip";
+
+        profile.addEventListener('click', () => { showProfile(account) })
+
+        tripsBtn.addEventListener('click', myTrips)
+
+        bookTrip.addEventListener('click', getDestinations)
+
+        nav().append(profile, tripsBtn, bookTrip);
+        getDestinations();
+      }
+    })
+    })
+
+    divName.append(nameLab, nameInfo, submitLogin)
+    loginForm.append(divName)
+    loginDiv.append(loginForm)
+
+    cont().append(loginDiv);
+
+  })
+  nav().append(loginBtn, createAccount);
 }
 
 function showProfile(profileAccount) {
-    let profileDiv = document.createElement("div")
-    profileDiv.classList = "card"
-    // <div class="card-body">
-    //     <h5 class="card-title">Card title</h5>
-    //     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    //     <a href="#" class="btn btn-primary">Go somewhere</a>
-    // </div>
-    let profileName = document.createElement("h3")
-    profileName.innerText = profileAccount.name
-    profileName.classList = "card-title"
-    profileDiv.append(profileName)
-    cont().append(profileDiv)
+  while (cont().firstChild) {
+    cont().removeChild(cont().firstChild);
+  } 
+  while(alertCont().firstChild) {
+    alertCont().removeChild(alertCont().firstChild);
+  }
+  let profileDiv = document.createElement("div")
+  profileDiv.classList = "card card-div"
+
+  let profileName = document.createElement("h3")
+  profileName.innerText = capitalizeFirstLetter(profileAccount.name)
+  profileName.classList = "card-title"
+  profileDiv.append(profileName)
+
+  let form = document.createElement("form")
+  let formGroup = document.createElement("div")
+  formGroup.classList = "form-group"
+  let label = document.createElement("label")
+  label.innerText = "Username:"
+  let input = document.createElement("input")
+  input.class="form-control"
+  input.placeholder= "Name"
+
+  formGroup.append(label,input)
+  
+  let btnDiv = document.createElement("div")
+  
+  let editBtn = document.createElement("button")
+  editBtn.innerText = "Edit Account"
+  editBtn.classList = "btn btn-info btn-sm"
+  editBtn.id = "edit-acc"
+  editBtn.type = "submit"
+  
+  form.addEventListener('submit', (ev) => { 
+    ev.preventDefault()
+    fetch(URL + "/travelers/" + profileAccount.id, {
+      method: "PATCH",
+      headers: {"Content-Type" : "application/json"},
+      body: JSON.stringify({name: ev.target[0].value})
+    })
+    .then(res => res.json())
+    .then(updatedAcc => {
+      if(updatedAcc === "You must enter a name to edit your profile"){
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
+        let myAlert = document.createElement("div")
+        myAlert.classList = "alert alert-danger"
+        myAlert.role = "alert"
+        myAlert.innerText = updatedAcc
+
+        alertCont().appendChild(myAlert)
+      }
+      else {
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
+        account = updatedAcc
+        profileName.innerText = capitalizeFirstLetter(updatedAcc.name)
+        form.reset()
+      }
+    })
+  })
+  
+  let deleteBtn = document.createElement("button")
+  deleteBtn.innerText = "Delete Account"
+  deleteBtn.classList = "btn btn-danger btn-sm"
+  deleteBtn.id = "delete-acc"
+  deleteBtn.type = "click"
+  
+  btnDiv.append(deleteBtn, editBtn)
+  form.append(formGroup, btnDiv)
+  profileDiv.append(form)
+  cont().append(profileDiv)
+
+  deleteBtn.addEventListener('click', () => {
+    fetch(URL + "/travelers/" + profileAccount.id, {
+      method: "DELETE",
+      headers: {"Content-Type" : "application/json"}
+    })
+    .then(res => res.json())
+    .then((message) => {
+      while(alertCont().firstChild) {
+        alertCont().removeChild(alertCont().firstChild);
+      }
+      let profile = document.querySelector("#prof-btn")
+      let myTrips = document.querySelector("#trips-btn")
+      let newTrip = document.querySelector("#new-trip-btn")
+
+      profile.remove()
+      myTrips.remove()
+      newTrip.remove()
+
+      let myAlert = document.createElement("div")
+      myAlert.classList = "alert alert-success"
+      myAlert.role = "alert"
+      myAlert.innerText = message
+
+      alertCont().appendChild(myAlert)
+      profileDiv.remove()
+
+      seeProfile()
+      keepAlert = true
+      getDestinations()
+    })
+  })
 }
 
 function seeBookings(event) {
@@ -277,6 +496,7 @@ function seeBookings(event) {
   }))
   // end of seeBookings function
 }
+
 function confirmTrip(event, roomId, location, destination, travelPrice, roomPrice, user, dateFrom, dateTo) {
   // debugger
   fetch(URL + "/trips", {
@@ -313,6 +533,9 @@ function confirmTrip(event, roomId, location, destination, travelPrice, roomPric
 }
 
 function myTrips() {
+  while(alertCont().firstChild) {
+    alertCont().removeChild(alertCont().firstChild);
+  }
   // console.log("chexking")
   let prevContainer = document.querySelector("#trip-container")
   if(prevContainer != null){
@@ -491,9 +714,15 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
     //   totalPrice.innerHTML = `Trip Total: $ ${newTotal}`
     //   debugger
     // })
-    debugger
-    $('.date-picker').on('dp.change', function(e){ 
-      debugger
+
+    startDate.addEventListener("blur", () => {
+      let priceTotal = document.querySelector("#total-price")
+      let tripDays = getDays(startDate.value, endDate.value)
+      let roomTot = room.price * (tripDays + 1)
+      let newTotal = (travelPrice + roomTot).toFixed(2)
+      priceTotal.innerHTML = `Trip Total: $ ${newTotal}`
+    })
+    endDate.addEventListener("blur", () => {
       let priceTotal = document.querySelector("#total-price")
       let tripDays = getDays(startDate.value, endDate.value)
       let roomTot = room.price * (tripDays + 1)
@@ -617,7 +846,6 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
   
 }
 
-
 function getDaysBetween(date) {
   let today = new Date();
   // let dd = String(today.getDate()).padStart(2, '0');
@@ -701,4 +929,8 @@ function showCarousel() {
   //               <img class="d-block w-100" src=".../800x400?auto=yes&bg=555&fg=333&text=Third slide" alt="Third slide">
   //             </div>
 
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
