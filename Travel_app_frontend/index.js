@@ -892,7 +892,7 @@ function showCarousel() {
           imageDiv.classList = "carousel-item active"
           let image = document.createElement("img")
           image.src = destination.image
-          image.classList = "d-block w-75" 
+          image.classList = "d-block w-100" 
           image.alt="First slide"
         
           imageDiv.append(image)
@@ -905,7 +905,7 @@ function showCarousel() {
           imageDiv.classList = "carousel-item"
           let image = document.createElement("img")
           image.src = destination.image
-          image.classList = "d-block w-75" 
+          image.classList = "d-block w-100" 
           image.alt="First slide"
           imageDiv.append(image)
           destinationCarousel.append(imageDiv)

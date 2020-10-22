@@ -84,15 +84,26 @@ h2 {
 div.row {
     width: 60%;
 }
-.d-block {
-    height: 500px;
+.d-block{
+    height: 250px;
+    margin: 0;
+    float: left;
+    
 }
+#carouselExampleFade{
+    height: 250px;
+    margin: 0;
+    float: left;
+    width: 450px
+    
+}
+
 
 a#prev{
     width: 7%;
 }
 a#next{
-    width: 60%;
+    width: 30%;
 }
 
 /* css for trip list */ 
