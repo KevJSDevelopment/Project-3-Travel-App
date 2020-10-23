@@ -6,10 +6,10 @@ h2 {
     font-family: 'Raleway';
     font-weight: 75;
     position: relative;
-    background: -webkit-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+    /* background: -webkit-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
     background: -moz-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
     background: -ms-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
-    background: -o-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan);
+    background: -o-linear-gradient(left, darkcyan, rgb(186, 208, 209), darkcyan); */
   }
   h2:before {
     content: "";
@@ -20,14 +20,14 @@ h2 {
     margin-left: -300px;
     margin-top: -220px;
     height: 200px;
-    background: -webkit-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
-    background: -moz-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
-    background: -ms-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
-    background: -o-radial-gradient(50% 50%, ellipse closest-side, #444, darkcyan);
-    z-index: -1;
+    /* background: -webkit-radial-gradient(50% 50%, ellipse closest-side, LightSkyBlue, Violet);
+    background: -moz-radial-gradient(50% 50%, ellipse closest-side, LightSkyBlue, rgb(168, 162, 230));
+    background: -ms-radial-gradient(50% 50%, ellipse closest-side, LightSkyBlue, Violet);
+    background: -o-radial-gradient(50% 50%, ellipse closest-side, LightSkyBlue, Violet);
+    z-index: -1; */
   }
   h2 a {
-    background: darkcyan;
+    background: LightSkyBlue;
     display: block;
     padding: 20px;
     text-decoration: none;
@@ -36,10 +36,15 @@ h2 {
   }
 
 .navbar-custom { 
-    background-color: darkcyan; 
+    /* background-color: LightSkyBlue;  */
+    background-image: url("/Users/alexstephane/Desktop/course_WORK/flatiron_course/dc-web-082420/phase_3/Project-3-Travel-App/IMG_5015.jpeg");
+    background-size: 100%
 } 
 .body-container {
     margin: auto;
+   
+    
+    
 }
 
 #edit-acc {
@@ -65,13 +70,20 @@ h2 {
 .form-control {
     margin: 5px;
 }
-.location-form {
-    display: inline-flex;
+
+.modal-header{
+    background-image: url("/Users/alexstephane/Desktop/course_WORK/flatiron_course/dc-web-082420/phase_3/Project-3-Travel-App/IMG_5012.jpeg"); 
+
 }
+
+
 
 #location-from {
     width: 25%;
     display: inline;
+    text-align: center;
+    text-align-last: center
+    
 }
 
 #location-to {
@@ -85,17 +97,40 @@ div.row {
     width: 60%;
 }
 .d-block{
-    height: 250px;
-    margin: 0;
+    height: 223px;
+    margin: 25;
     float: left;
+    margin-top: 50px;
+    
     
 }
+.ol-md-6 {
+    /* height: 223px;
+    margin: 25;
+    float: left;
+    margin-top: 50px; */
+    text-align: center
+
+}
+
+.mt-5{
+    text-align: center;
+}
+.subtitle{
+    text-align: center;
+}
+    
+
 #carouselExampleFade{
     height: 250px;
-    margin: 0;
+    margin: 100;
     float: left;
     width: 450px
     
+}
+#body-container{
+    /* background-image: url("/Users/alexstephane/Desktop/course_WORK/flatiron_course/dc-web-082420/phase_3/Project-3-Travel-App/IMG_5012.jpeg");  */
+
 }
 
 
@@ -104,6 +139,10 @@ a#prev{
 }
 a#next{
     width: 30%;
+}
+#app-title{
+    /* background-image: url("/Users/alexstephane/Desktop/course_WORK/flatiron_course/dc-web-082420/phase_3/Project-3-Travel-App/IMG_5012.jpeg");  */
+
 }
 
 /* css for trip list */ 
@@ -131,10 +170,7 @@ a#next{
     float: right;
 }
 
-#bookings {
-    border: 2px solid grey;
 
-}
 
 .scrolling-wrapper{
 	overflow-x: auto;
@@ -143,7 +179,8 @@ a#next{
 body{
 	background-color: black;
 	color: #fff;
-	font-family: 'system-ui';
+    font-family: 'system-ui';
+      
 }
 
 h1{
