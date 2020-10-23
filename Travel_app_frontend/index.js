@@ -19,13 +19,12 @@ function getDestinations() {
   while (cont().firstChild) {
     cont().removeChild(cont().firstChild);
   } 
-  if(keepAlert === false){
+
+  if (keepAlert === false) {
     while(alertCont().firstChild) {
       alertCont().removeChild(alertCont().firstChild);
     }
-  }
-  else 
-  {
+  } else {
     keepAlert = false
   }
   cont().innerHTML = `<div class="bootstrap-iso">
@@ -142,6 +141,9 @@ function seeProfile() {
     while (cont().firstChild) {
       cont().removeChild(cont().firstChild);
     } 
+    while(alertCont().firstChild) {
+      alertCont().removeChild(alertCont().firstChild);
+    }
     let accountDiv = document.createElement("div")
     accountDiv.classList = "card-div"
 
@@ -162,7 +164,9 @@ function seeProfile() {
 
     accountForm.addEventListener("submit", (ev) => {
         ev.preventDefault();
-        
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
         fetch(URL + "/travelers", {
             method: "POST",
             headers: {
@@ -339,63 +343,30 @@ function showProfile(profileAccount) {
 
   formGroup.append(label,input)
   
-  let btnDiv = document.createElement("div")
+  // let btnDiv = document.createElement("div")
   
   let editBtn = document.createElement("button")
   editBtn.innerText = "Edit Account"
   editBtn.classList = "btn btn-info btn-sm"
   editBtn.id = "edit-acc"
-  editBtn.type = "submit"
+  editBtn.type = 'submit'
   
-  form.addEventListener('submit', (ev) => { 
-    ev.preventDefault()
-    fetch(URL + "/travelers/" + profileAccount.id, {
-      method: "PATCH",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({name: ev.target[0].value})
-    })
-    .then(res => res.json())
-    .then(updatedAcc => {
-      if(updatedAcc === "You must enter a name to edit your profile"){
-        while(alertCont().firstChild) {
-          alertCont().removeChild(alertCont().firstChild);
-        }
-        let myAlert = document.createElement("div")
-        myAlert.classList = "alert alert-danger"
-        myAlert.role = "alert"
-        myAlert.innerText = updatedAcc
-
-        alertCont().appendChild(myAlert)
-      }
-      else {
-        while(alertCont().firstChild) {
-          alertCont().removeChild(alertCont().firstChild);
-        }
-        account = updatedAcc
-        profileName.innerText = capitalizeFirstLetter(updatedAcc.name)
-        form.reset()
-      }
-    })
-  })
   
   let deleteBtn = document.createElement("button")
   deleteBtn.innerText = "Delete Account"
   deleteBtn.classList = "btn btn-danger btn-sm"
   deleteBtn.id = "delete-acc"
-  deleteBtn.type = "click"
+  deleteBtn.type = 'click'
   
-  btnDiv.append(deleteBtn, editBtn)
-  form.append(formGroup, btnDiv)
+  // btnDiv.append(deleteBtn, editBtn)
+  form.append(formGroup, deleteBtn,editBtn)
   profileDiv.append(form)
   cont().append(profileDiv)
-
+  
   deleteBtn.addEventListener('click', () => {
-    fetch(URL + "/travelers/" + profileAccount.id, {
-      method: "DELETE",
-      headers: {"Content-Type" : "application/json"}
-    })
+    fetch(URL + "/travelers/" + profileAccount.id)
     .then(res => res.json())
-    .then((message) => {
+    .then((deleteMessage) => {
       while(alertCont().firstChild) {
         alertCont().removeChild(alertCont().firstChild);
       }
@@ -407,20 +378,55 @@ function showProfile(profileAccount) {
       myTrips.remove()
       newTrip.remove()
 
-      let myAlert = document.createElement("div")
-      myAlert.classList = "alert alert-success"
-      myAlert.role = "alert"
-      myAlert.innerText = message
+      let deleteAlert = document.createElement("div")
+      deleteAlert.classList = "alert alert-success"
+      deleteAlert.role = "alert"
+      deleteAlert.innerText = deleteMessage
 
-      alertCont().appendChild(myAlert)
+      alertCont().appendChild(deleteAlert)
       profileDiv.remove()
 
-      seeProfile()
       keepAlert = true
+      seeProfile()
       getDestinations()
+      
+      // while(alertCont().firstChild) {
+      //   if(alertCont().removeChild(alertCont().firstChild) != deleteAlert){
+      //     alertCont().removeChild(alertCont().firstChild);
+      //   }
+      // }
+    })
+  })
+
+  form.addEventListener('submit', (ev) => { 
+    ev.preventDefault()
+    while(alertCont().firstChild) {
+      alertCont().removeChild(alertCont().firstChild);
+    }
+    fetch(URL + "/travelers/" + profileAccount.id, {
+      method: "PATCH",
+      headers: {"Content-Type" : "application/json"},
+      body: JSON.stringify({name: ev.target[0].value})
+    })
+    .then(res => res.json())
+    .then(updatedAcc => {
+      if(updatedAcc === "You must enter a name to edit your profile"){
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
+      }
+      else {
+        while(alertCont().firstChild) {
+          alertCont().removeChild(alertCont().firstChild);
+        }
+        account = updatedAcc
+        profileName.innerText = capitalizeFirstLetter(updatedAcc.name)
+        form.reset()
+      }
     })
   })
 }
+
 
 function seeBookings(event) {
   event.preventDefault();
@@ -641,6 +647,15 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
         
     let modalHeader = document.createElement("div")
     modalHeader.classList = "modal-header"
+    // fetch(URL + "/dest_image",
+    // {method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({dest_name: dest })
+    //   })
+    // .then(resp => resp.json())
+    // .then(image => {
+    //   modalHeader.style.backgroundImage= `url(${image})`;
+    // })
     let h5 = document.createElement("h5")
     h5.classList = "modal-title"
     h5.innerHTML = "Booking Information"
@@ -796,6 +811,15 @@ function makeModal(room, travelPrice, loc, dest, dateFrom, dateTo, trip = null) 
         
     let modalHeader = document.createElement("div")
     modalHeader.classList = "modal-header"
+    // fetch(URL + "/dest_image",
+    // {method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({dest_name: dest })
+    //   })
+    // .then(resp => resp.json())
+    // .then(image => {
+    //   modalHeader.style.backgroundImage= `url(${image})`;
+    // })
     let h5 = document.createElement("h5")
     h5.classList = "modal-title"
     h5.innerHTML = "Booking Information"

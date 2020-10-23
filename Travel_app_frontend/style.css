@@ -40,6 +40,8 @@ h2 {
   h2.hotel {
       color: black;
   }
+
+
 .navbar-custom { 
     /* background-color: LightSkyBlue;  */
     /* background-image: url("/Users/alexstephane/Desktop/course_WORK/flatiron_course/dc-web-082420/phase_3/Project-3-Travel-App/IMG_5015.jpeg"); */
@@ -57,6 +59,9 @@ h2 {
 #delete-acc {
     margin: 5px;
     float: left;
+}
+.card {
+    margin: 20px;
 }
 .card-div {
     text-align: center;
@@ -143,9 +148,18 @@ h2 {
     width: 525px;
 }
 
+.modal-header {
+    background-image: url("/Users/kevinsheehan/Documents/Flatiron/dc-web-082420/Project-3/IMG_5015.jpeg");
+    background-size: 100%;
+}
 #carousel-card {
     float: left;
     /* margin-left: 50px; */
+}
+
+#trip-container {
+    max-width: 960px;
+    display: flex;
 }
 
 .carousel-image {
@@ -174,11 +188,9 @@ a#next{
 	overflow-x: auto;
 }
 
-body{
-	background-color: black;
+body {
 	color: #fff;
     font-family: 'system-ui';
-      
 }
 
 h1{
