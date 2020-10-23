@@ -28,18 +28,17 @@ function getDestinations() {
   {
     keepAlert = false
   }
-  cont().innerHTML = `<form id="location-form">
-  <select class="form-control form-control-lg" id="location-from">
-    
-  </select>
-  <select class="form-control form-control-lg" id="location-to">
-      
-  </select>
-    <!-- HTML Form (wrapped in a .bootstrap-iso div) -->
-    <div class="bootstrap-iso">
-    <div class="container-fluid">
-      <div class="row">
-      <div class="col-md-6 col-sm-6 col-xs-12">
+  cont().innerHTML = `<div class="bootstrap-iso">
+  <div class="container-fluid" id="background">
+    <div class="row">
+      <form id="location-form">
+       
+        <select class="form-control form-control-lg" id="location-from">
+          
+        </select>
+        <select class="form-control form-control-lg" id="location-to">
+            
+        </select>
         <form class="form-horizontal" method="post" id="date-form">
         <div class="form-group ">
           <label class="control-label col-sm-2 requiredField" for="date">
@@ -78,32 +77,38 @@ function getDestinations() {
           </div>
         </form>
       </div>
-      </div>
     </div>
     </div>
 </form>
-<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
-    <div id="location-carousel"class="carousel-inner">
-      
+<div class="container">
+  <div class="row justify-content-around">
+    <div class="col-md-6">
+      <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+        <div id="location-carousel"class="carousel-inner">
+          
+        </div>
+        <a id="prev"class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a id="next"class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
     </div>
-    <a id="prev"class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a id="next"class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
+    </div>
+    <div class="col-md-6">
+      <div class="card-div" id="bookings-card">   
+        <div class="container-fluid" id="bookings">
+          <h1 class="mt-5">Available Bookings</h1>
+          <p class="subtitle">List of all rooms that are available</p>
+          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4" id="bookings-list">
+            
+          </div>
+        </div>
+        </div>
+    </div>
   </div>
-<div>
-   
-<div class="container-fluid" id="bookings">
-  <h1 class="mt-5">Available Bookings</h1>
-  <p class="subtitle">List of all rooms that are available</p>
-  <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4" id="bookings-list">
-    
-  </div>
-</div>
 </div>` 
   showCarousel()
   let locationFrom = document.querySelector("#location-from")
@@ -456,6 +461,7 @@ function seeBookings(event) {
       cardDiv.classList = "card card-block"
       
       let hotelName = document.createElement("h2")
+      hotelName.class = "hotel"
       hotelName.innerText = hotel.name
       
       let roomNum = document.createElement("p") 
@@ -892,7 +898,7 @@ function showCarousel() {
           imageDiv.classList = "carousel-item active"
           let image = document.createElement("img")
           image.src = destination.image
-          image.classList = "d-block w-100" 
+          image.classList = "d-block w-100 carousel-image"  
           image.alt="First slide"
         
           imageDiv.append(image)
@@ -905,7 +911,7 @@ function showCarousel() {
           imageDiv.classList = "carousel-item"
           let image = document.createElement("img")
           image.src = destination.image
-          image.classList = "d-block w-100" 
+          image.classList = "d-block w-100 carousel-image" 
           image.alt="First slide"
           imageDiv.append(image)
           destinationCarousel.append(imageDiv)
